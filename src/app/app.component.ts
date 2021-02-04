@@ -1,25 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { tap, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent  {
+export class AppComponent implements OnInit, OnDestroy {
+  subscriptions = new Subscription();
+  load$ = new BehaviorSubject<boolean>(false);
+  loading = false;
   letterCombos = ['ab', 'ac', 'ad'];
-  currentCombo: string;
-  display: string;
-  get selected(): string {
-    return this.currentCombo;
+  selected: string;
+
+  onOpenChange() {
+    this.load$.next(true);
   }
-  set selected(combo: string) {
-    console.log(combo);
-    if (combo === null) {
-      this.display = 'emitted null!';
-    }
-    else {
-      this.display = combo;
-    }
-    this.currentCombo = combo;
+
+  ngOnInit() {
+    this.subscriptions.add(
+      this.load$
+        .pipe(
+          delay(1000),
+          tap(() => this.loading = true),
+          delay(1000),
+          tap(() => this.loading = false)
+        )
+        .subscribe()
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

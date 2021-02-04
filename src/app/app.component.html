@@ -1,10 +1,10 @@
-<div id="demo-ctr">
+<clr-spinner *ngIf="loading" [clrInline]="true"></clr-spinner>
+<div id="demo-ctr" *ngIf="!loading">
   <clr-combobox-container>
-    <clr-combobox [(ngModel)]="selected" placeholder="Select a letter combo">
+    <clr-combobox [(ngModel)]="selected" placeholder="Select a letter combo" (clrOpenChange)="onOpenChange()">
       <clr-options>
         <clr-option *clrOptionItems="let combo of letterCombos" [clrValue]="combo">{{combo}}</clr-option>
       </clr-options>
     </clr-combobox>
   </clr-combobox-container>
-  <h4>{{display}}</h4>
 </div>
